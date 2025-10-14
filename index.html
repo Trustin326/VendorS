@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VendorS — Invoice & Expense Manager</title>
+  <meta name="description" content="VendorS is a lightweight, front-end invoice & expense manager for freelancers and local vendors. No backend, no database, simple deploy." />
+  <link rel="icon" href="assets/img/favicon.png">
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <div class="logo">VF</div>
+      <div class="brand-text">
+        <h1>VendorS</h1>
+        <p class="tag">Invoice & Expense Manager</p>
+      </div>
+    </div>
+    <nav class="top-actions">
+      <button id="themeToggle" class="ghost">🌗 Theme</button>
+      <button id="exportAll" class="ghost">⬇ Export</button>
+      <button id="importAll" class="primary">⬆ Import</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <aside class="sidebar">
+      <button data-view="dashboard" class="nav-item active">🏠 Dashboard</button>
+      <button data-view="invoices" class="nav-item">🧾 Invoices</button>
+      <button data-view="expenses" class="nav-item">💳 Expenses</button>
+      <button data-view="clients" class="nav-item">👥 Clients</button>
+      <button data-view="reports" class="nav-item">📈 Reports</button>
+      <button data-view="settings" class="nav-item">⚙ Settings</button>
+    </aside>
+
+    <section class="content">
+      <!-- DASHBOARD -->
+      <section id="view-dashboard" class="view visible">
+        <div class="hero">
+          <h2>Welcome to <span>VendorS</span></h2>
+          <p>Run your invoices and expenses in one simple, beautiful dashboard. No backend. No setup.</p>
+          <div class="hero-cta">
+            <button id="seedDemo" class="primary">Load Demo Data</button>
+            <button id="clearAll" class="danger">Clear All Data</button>
+          </div>
+        </div>
+
+        <div class="cards">
+          <div class="card">
+            <h3>Unpaid Invoices</h3>
+            <p class="big" id="unpaidCount">0</p>
+          </div>
+          <div class="card">
+            <h3>Outstanding Balance</h3>
+            <p class="big" id="outstandingTotal">$0.00</p>
+          </div>
+          <div class="card">
+            <h3>This Month Expenses</h3>
+            <p class="big" id="monthExpenses">$0.00</p>
+          </div>
+          <div class="card">
+            <h3>Top Client</h3>
+            <p class="big" id="topClient">—</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Income vs. Expenses (Last 6 Months)</h3>
+            <button id="printReport" class="ghost">🖨 Print / PDF</button>
+          </div>
+          <canvas id="chart" width="900" height="360" aria-label="Income vs Expenses chart"></canvas>
+        </div>
+      </section>
+
+      <!-- INVOICES -->
+      <section id="view-invoices" class="view">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Invoices</h3>
+            <div class="actions">
+              <button id="addInvoice" class="primary">+ New Invoice</button>
+              <button id="exportInvoices" class="ghost">Export CSV</button>
+              <label class="file">
+                <input type="file" id="importInvoices" accept=".csv" />
+                <span>Import CSV</span>
+              </label>
+            </div>
+          </div>
+          <table class="table" id="invoiceTable" aria-label="Invoice table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Client</th>
+                <th>Date</th>
+                <th>Due</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- EXPENSES -->
+      <section id="view-expenses" class="view">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Expenses</h3>
+            <div class="actions">
+              <button id="addExpense" class="primary">+ Add Expense</button>
+              <button id="exportExpenses" class="ghost">Export CSV</button>
+              <label class="file">
+                <input type="file" id="importExpenses" accept=".csv" />
+                <span>Import CSV</span>
+              </label>
+            </div>
+          </div>
+          <table class="table" id="expenseTable" aria-label="Expense table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Vendor</th>
+                <th>Notes</th>
+                <th>Amount</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- CLIENTS -->
+      <section id="view-clients" class="view">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Clients</h3>
+            <div class="actions">
+              <button id="addClient" class="primary">+ Add Client</button>
+              <button id="exportClients" class="ghost">Export CSV</button>
+              <label class="file">
+                <input type="file" id="importClients" accept=".csv" />
+                <span>Import CSV</span>
+              </label>
+            </div>
+          </div>
+          <table class="table" id="clientTable" aria-label="Client table">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Contact</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Notes</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- REPORTS -->
+      <section id="view-reports" class="view">
+        <div class="panel">
+          <div class="panel-head">
+            <h3>Reports</h3>
+            <div class="actions">
+              <button id="downloadBackup" class="ghost">⬇ JSON Backup</button>
+              <button id="restoreBackup" class="ghost">⬆ Restore JSON</button>
+            </div>
+          </div>
+          <div class="grid-2">
+            <div class="report-card">
+              <h4>Monthly Summary</h4>
+              <p id="monthlySummary">No data yet.</p>
+            </div>
+            <div class="report-card">
+              <h4>Top Categories</h4>
+              <ul id="topCategories"></ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
+      <section id="view-settings" class="view">
+        <div class="panel">
+          <div class="panel-head"><h3>Settings</h3></div>
+          <form id="settingsForm" class="form">
+            <label>
+              <span>Business Name</span>
+              <input type="text" name="bizName" placeholder="Your brand" />
+            </label>
+            <label>
+              <span>Currency</span>
+              <input type="text" name="currency" value="$" maxlength="3" />
+            </label>
+            <label>
+              <span>Tax %</span>
+              <input type="number" name="tax" value="0" step="0.01" />
+            </label>
+            <button class="primary" type="submit">Save Settings</button>
+          </form>
+          <p class="muted">All data is stored locally in your browser via localStorage.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Dialogs -->
+  <dialog id="modal"></dialog>
+
+  <footer class="app-footer">
+    <p>VendorS © <span id="year"></span> • Front‑end only • No backend required</p>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
